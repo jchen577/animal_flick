@@ -5,7 +5,7 @@ using TMPro;
 
 public class FlickScript : MonoBehaviour
 {
-    [Range(0, 90)] public float angle;
+    [Range(1, 90)] public float angle;
     public float power;
 
     public Slider powerSlider;
@@ -23,6 +23,9 @@ public class FlickScript : MonoBehaviour
 
     // Flag to check if the object has been launched
     public bool IsLaunched { get; private set; }
+
+    private bool isGrounded;
+
 
     void Start()
     {
@@ -43,16 +46,27 @@ public class FlickScript : MonoBehaviour
             Debug.LogError("AngleSlider or AngleText is not assigned!");
         }
 
-        // Initialize power with a random value
+        isAdjustingPower = true;
+        isAdjustingAngle = false;
+        IsLaunched = false;
+
+        // Optionally reset power and angle to random values or defaults
         power = Random.Range(1.0f, 49.0f);
         powerSlider.value = power;
         UpdatePowerText();
 
-        // Initialize angle slider
-        angle = Random.Range(0, 90);
+        angle = Random.Range(1, 90);
         angleSlider.value = angle;
         UpdateAngleText();
 
+        // Stop any running coroutines
+        if (sliderCoroutine != null)
+        {
+            StopCoroutine(sliderCoroutine);
+            sliderCoroutine = null; // Nullify the coroutine reference
+        }
+
+        // Start adjusting power again
         sliderCoroutine = StartCoroutine(AdjustSlider(powerSlider, UpdatePowerText));
     }
 
@@ -87,6 +101,7 @@ public class FlickScript : MonoBehaviour
             // Launch the object after both power and angle are set
             LaunchObject();
         }
+
     }
 
     void LaunchObject()
@@ -126,6 +141,56 @@ public class FlickScript : MonoBehaviour
             angleText.text = $"Angle: {angleSlider.value:F1}°";
         }
     }
+
+    void OnCollisionStay(Collision collision)
+    {
+        // Update isGrounded if the object is colliding with the ground layer
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = true;
+        }
+    }
+
+    void OnCollisionExit(Collision collision)
+    {
+        // Reset isGrounded when the object leaves the ground
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = false;
+        }
+    }
+
+    public bool CheckIfGrounded()
+    {
+        return isGrounded;
+    }
+
+    public void ResetFlickState()
+    {
+        isAdjustingPower = true;
+        isAdjustingAngle = false;
+        IsLaunched = false;
+
+        // Optionally reset power and angle to random values or defaults
+        power = Random.Range(1.0f, 49.0f);
+        powerSlider.value = power;
+        UpdatePowerText();
+
+        angle = Random.Range(1, 90);
+        angleSlider.value = angle;
+        UpdateAngleText();
+
+        // Stop any running coroutines
+        if (sliderCoroutine != null)
+        {
+            StopCoroutine(sliderCoroutine);
+            sliderCoroutine = null; // Nullify the coroutine reference
+        }
+
+        // Start adjusting power again
+        sliderCoroutine = StartCoroutine(AdjustSlider(powerSlider, UpdatePowerText));
+    }
+
 
     IEnumerator AdjustSlider(Slider slider, System.Action updateTextCallback)
     {

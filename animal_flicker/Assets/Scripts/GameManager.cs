@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
@@ -10,6 +9,11 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI gameStatusText;
     public TextMeshProUGUI player1ScoreText;
     public TextMeshProUGUI player2ScoreText;
+
+    //public AudioClip backgroundMusic;
+    public AudioClip fallOffSound;
+
+    private AudioSource audioSource;  // AudioSource for playing sounds
 
     private int currentPlayer = 1;
     private int round = 1;
@@ -22,48 +26,60 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        // Get or add an AudioSource component
+        audioSource = GetComponent<AudioSource>();
+
+        // Play background music on loop
+        //if (backgroundMusic != null)
+        //{
+        //    audioSource.clip = backgroundMusic;
+        //    audioSource.loop = true;
+        //    audioSource.Play();
+        //}
+
         UpdateUI();
         ResetObjectPosition();
     }
 
     void Update()
     {
-        Debug.Log("Vel: " + flickScript.GetComponent<Rigidbody>().velocity.magnitude);
         if (isLaunching) return;
 
-        // Only start counting when the object has been launched
-        if (flickScript != null && flickScript.IsLaunched)
+        Rigidbody rb = flickScript.GetComponent<Rigidbody>();
+        if (flickScript.IsLaunched)
         {
-            // Check if the object velocity is below threshold and if it's time to wait
-            if (flickScript.GetComponent<Rigidbody>().velocity.magnitude < 0.1f || flickScript.transform.position.y < 0)
+            if (flickScript.transform.position.y < -5)
             {
-                StartCoroutine(WaitForObjectToStop());
+                isLaunching = true;
+                StartCoroutine(HandleOutofBounds());
+            }
+            else if (rb.velocity.magnitude < 0.1f && flickScript.CheckIfGrounded())
+            {
+                isLaunching = true;
+                StartCoroutine(HandleTurnEnd());
             }
         }
     }
 
-    // Coroutine to wait for the object to stop moving
-    private IEnumerator WaitForObjectToStop()
+    IEnumerator HandleTurnEnd()
     {
-        // Wait for 2 seconds to ensure the object has stopped moving
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(0.5f);
 
-        // Now check if the object is truly stopped
-        if (flickScript.GetComponent<Rigidbody>().velocity.magnitude < 0.1f)
-        {
-            if (flickScript.transform.position.y < 0)
-            {
-                AddScore(0); // Out of bounds
-            }
-            else
-            {
-                float distance = Vector3.Distance(flickScript.transform.position, launchStartPosition.position);
-                Debug.Log("Dist: " + distance);
-                AddScore(distance);
-            }
+        float distance = Vector3.Distance(flickScript.transform.position, launchStartPosition.position);
+        AddScore(distance);
 
-            NextTurn();
-        }
+        NextTurn();
+    }
+
+    IEnumerator HandleOutofBounds()
+    {
+        PlayFallOffSound();  // Play fall off sound
+        yield return new WaitForSeconds(0.5f);
+
+        Debug.Log("Out of Bounds");
+        AddScore(0);
+
+        NextTurn();
     }
 
     void AddScore(float score)
@@ -92,6 +108,7 @@ public class GameManager : MonoBehaviour
 
         if (round > maxRounds)
         {
+            UpdateUI();
             EndGame();
         }
         else
@@ -109,10 +126,25 @@ public class GameManager : MonoBehaviour
 
         // Reset position and velocity
         flickScript.transform.position = launchStartPosition.position;
+        flickScript.transform.rotation = Quaternion.identity;
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
 
-        flickScript.ResetLaunchFlag(); // Reset the launch flag in FlickScript
+        // Reset FlickScript state
+        flickScript.ResetLaunchFlag();
+        flickScript.ResetFlickState();
+
+        isLaunching = false;
+
+        
+    }
+
+    void PlayFallOffSound()
+    {
+        if (fallOffSound != null)
+        {
+            audioSource.PlayOneShot(fallOffSound);
+        }
     }
 
     void UpdateUI()
