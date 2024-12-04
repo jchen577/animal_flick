@@ -120,24 +120,27 @@ public class GameManager : MonoBehaviour
 
     void ResetObjectPosition()
     {
+        Debug.Log("ResetObjectPosition called");
         isLaunching = true;
 
         Rigidbody rb = flickScript.GetComponent<Rigidbody>();
 
-        // Reset position and velocity
+        // Reset position, rotation, and physics
         flickScript.transform.position = launchStartPosition.position;
         flickScript.transform.rotation = Quaternion.identity;
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
+        rb.Sleep(); // Ensures Rigidbody stops simulating physics
 
-        // Reset FlickScript state
+        Debug.Log($"Position set to: {launchStartPosition.position}");
+
+        // Reset FlickScript state (ensure these methods don't reset position)
         flickScript.ResetLaunchFlag();
         flickScript.ResetFlickState();
 
         isLaunching = false;
-
-        
     }
+
 
     void PlayFallOffSound()
     {

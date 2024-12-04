@@ -2358,31 +2358,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1524473159}
   m_CullTransparentMesh: 1
---- !u!1 &1864980258 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: -9126315663738911953, guid: 78ab6b46f6759214da2ad0b057cbf85a,
-    type: 3}
-  m_PrefabInstance: {fileID: 1875925778}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1864980261
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1864980258}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b6b4391ca6514931a0885860891f18e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  angle: 45
-  power: 10
-  powerSlider: {fileID: 0}
-  powerText: {fileID: 0}
-  angleSlider: {fileID: 0}
-  angleText: {fileID: 0}
-  gameManager: {fileID: 0}
 --- !u!1001 &1875925778
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2471,10 +2446,6 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1931068407}
-    - targetCorrespondingSourceObject: {fileID: -9126315663738911953, guid: 78ab6b46f6759214da2ad0b057cbf85a,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1864980261}
   m_SourcePrefab: {fileID: 100100000, guid: 78ab6b46f6759214da2ad0b057cbf85a, type: 3}
 --- !u!1 &1925666844
 GameObject:
