@@ -14,6 +14,8 @@ public class FlickScript : MonoBehaviour
     public Slider angleSlider;
     public TextMeshProUGUI angleText;
 
+    public TextMeshProUGUI modeText;
+
     private Rigidbody rb;
     private bool isAdjustingPower = true;
     private bool isAdjustingAngle = false;
@@ -128,6 +130,10 @@ public class FlickScript : MonoBehaviour
 
     void UpdatePowerText()
     {
+        if (modeText != null)
+        {
+            modeText.text = "Press [Space] to lock Power";
+        }
         if (powerText != null)
         {
             powerText.text = $"Power: {powerSlider.value:F1}";
@@ -136,6 +142,10 @@ public class FlickScript : MonoBehaviour
 
     void UpdateAngleText()
     {
+        if (modeText != null)
+        {
+            modeText.text = "Press [Space] to lock Angle";
+        }
         if (angleText != null)
         {
             angleText.text = $"Angle: {angleSlider.value:F1}°";
