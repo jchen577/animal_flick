@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI gameStatusText;
     public TextMeshProUGUI player1ScoreText;
     public TextMeshProUGUI player2ScoreText;
+    public TextMeshProUGUI windText;
 
     //public AudioClip backgroundMusic;
     public AudioClip fallOffSound;
@@ -24,10 +25,17 @@ public class GameManager : MonoBehaviour
 
     public bool isLaunching = false;
 
+    public WindManager windManager;
+
     void Start()
     {
         // Get or add an AudioSource component
         audioSource = GetComponent<AudioSource>();
+
+        if (windManager == null)
+        {
+            Debug.LogError("WindManager is not assigned in GameManager!");
+        }
 
         // Play background music on loop
         //if (backgroundMusic != null)
@@ -37,6 +45,7 @@ public class GameManager : MonoBehaviour
         //    audioSource.Play();
         //}
 
+        windManager.GenerateRandomWind();
         UpdateUI();
         ResetObjectPosition();
     }
@@ -113,6 +122,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            windManager.GenerateRandomWind();
             ResetObjectPosition();
             UpdateUI();
         }
@@ -155,6 +165,7 @@ public class GameManager : MonoBehaviour
         gameStatusText.text = $"Round {round}/{maxRounds}:\nPlayer {currentPlayer}'s Turn";
         player1ScoreText.text = $"Player 1 Score:\n{player1Score:F1}";
         player2ScoreText.text = $"Player 2 Score:\n{player2Score:F1}";
+        windText.text = $"Wind:\n{windManager.GetWindDescription()}";
     }
 
     void EndGame()

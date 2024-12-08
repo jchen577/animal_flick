@@ -120,6 +120,11 @@ public class FlickScript : MonoBehaviour
 
         rb.velocity = launchDirection * power;
 
+        if (gameManager.windManager != null)
+        {
+            gameManager.windManager.ApplyWindForce(rb);
+        }
+
         IsLaunched = true; // Set the flag to true when the object is launched
     }
 
