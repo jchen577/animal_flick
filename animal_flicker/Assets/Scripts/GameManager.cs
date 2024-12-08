@@ -152,9 +152,9 @@ public class GameManager : MonoBehaviour
 
     void UpdateUI()
     {
-        gameStatusText.text = $"Player {currentPlayer}'s Turn - Round {round}";
-        player1ScoreText.text = $"Player 1 Score: {player1Score:F1}";
-        player2ScoreText.text = $"Player 2 Score: {player2Score:F1}";
+        gameStatusText.text = $"Round {round}/{maxRounds}:\nPlayer {currentPlayer}'s Turn";
+        player1ScoreText.text = $"Player 1 Score:\n{player1Score:F1}";
+        player2ScoreText.text = $"Player 2 Score:\n{player2Score:F1}";
     }
 
     void EndGame()
